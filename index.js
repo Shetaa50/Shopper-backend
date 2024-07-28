@@ -35,7 +35,7 @@ app.get("/", (req, res) => {
 // })
 // image upload
 // app.use('/images', express.static('upload/'))
-app.post('/uploads', upload, (req, res) => {
+app.post('/uploads', uploads, (req, res) => {
     res.json({
         success: 1,
         image_url: `https://shopper-backend-nine.vercel.app/uploads/${req.file.filename}`
