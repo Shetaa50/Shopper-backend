@@ -33,7 +33,7 @@ const upload = multer({
     dest: 'upload/'
 })
 // image upload
-app.use('/images', express.static('upload/'))
+// app.use('/images', express.static('upload/'))
 app.post('/upload', upload.single('product'), (req, res) => {
     res.json({
         success: 1,
