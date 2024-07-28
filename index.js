@@ -4,12 +4,19 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("./utils/cloudinary");
+const upload = require("./middleware/multer");
+const bodyParser = require("body-parser");
 // const multer = require("multer");
 const path = require("path");
-const uploads = require('./uploads')
+// const uploads = require('./uploads')
+require('dotenv').config()
+const uploadRoute = require('./controller/routeUpload');
+
 
 app.use(express.json());
 app.use(cors());
+// app.use(bodyParser, express.urlencoded({ extended: true }));
 
 // database connection 
 mongoose.connect("mongodb+srv://ae796309:01148392533ae-@cluster0.wt5rvlr.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/e-commerce").then(() => {
@@ -24,6 +31,11 @@ app.get("/", (req, res) => {
 
 // image engine 
 
+//the route 
+app.use( "/api",uploadRoute);
+
+
+
 // const storage = multer.diskStorage({
 //     destination: "./upload/images",
 //     filename: (req, file, cb) => {
@@ -34,12 +46,13 @@ app.get("/", (req, res) => {
 //     dest: 'uploads/'
 // })
 // image upload
-// app.use('/images', express.static('upload/'))
-app.post('/uploads', (req, res) => {
+app.use('/images', express.static('upload/'))
+app.post('/upload', (req, res) => {
     res.json({
         success: 1,
-        image_url: `https://shopper-backend-nine.vercel.app/uploads/${req.file.filename}`
+        image_url: `https://res.cloudinary.com/dhxstvo2o/image/upload/v1722202000/${req.file.filename}`
     })
+    console.log(image_url)
 })
 
 // DB schema 
@@ -82,7 +95,10 @@ const Product = mongoose.model('product', {
     },
 })
 //Add Product
-app.post('/addproduct', async (req, res) => {
+app.post('/addproduct', upload.single('image'),async (req, res) => {
+    
+   const result =  await cloudinary.uploader.upload(req.file.path)
+    // console.log(req.body);
     let products = await Product.find({})
     let id;
     if (products.length > 0) {
@@ -96,7 +112,7 @@ app.post('/addproduct', async (req, res) => {
     const product = new Product({
         id: id,
         name: req.body.name,
-        image: req.body.image,
+        image: result.url,
         category: req.body.category,
         new_price: req.body.new_price,
         old_price: req.body.old_price,
@@ -108,6 +124,7 @@ app.post('/addproduct', async (req, res) => {
     res.json({
         success: 1,
         name: req.body.name,
+        data:product
     })
 })
 //Remove Product
