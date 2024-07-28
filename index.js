@@ -23,21 +23,21 @@ app.get("/", (req, res) => {
 
 // image engine 
 
-const storage = multer.diskStorage({
-    destination: "./upload/images",
-    filename: (req, file, cb) => {
-        return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
-    }
-})
+// const storage = multer.diskStorage({
+//     destination: "./upload/images",
+//     filename: (req, file, cb) => {
+//         return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
+//     }
+// })
 const upload = multer({
-    storage: storage
+    dest: 'upload/'
 })
 // image upload
-app.use('/images', express.static('upload/images'))
+app.use('/images', express.static('upload/'))
 app.post('/upload', upload.single('product'), (req, res) => {
     res.json({
         success: 1,
-        image_url: `https://shopper-backend-nine.vercel.app/images/${req.file.filename}`
+        image_url: `https://shopper-backend-nine.vercel.app/upload/${req.file.filename}`
     })
 })
 
