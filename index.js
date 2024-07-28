@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 // const multer = require("multer");
 const path = require("path");
-const upload = require('./upload')
+const uploads = require('./uploads')
 
 app.use(express.json());
 app.use(cors());
