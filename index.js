@@ -4,8 +4,9 @@ const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
-const multer = require("multer");
+// const multer = require("multer");
 const path = require("path");
+const upload = require('./upload')
 
 app.use(express.json());
 app.use(cors());
@@ -29,15 +30,15 @@ app.get("/", (req, res) => {
 //         return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
 //     }
 // })
-const upload = multer({
-    dest: 'upload/'
-})
+// const upload = multer({
+//     dest: 'uploads/'
+// })
 // image upload
 // app.use('/images', express.static('upload/'))
-app.post('/upload', upload.single('product'), (req, res) => {
+app.post('/uploads', upload, (req, res) => {
     res.json({
         success: 1,
-        image_url: `https://shopper-backend-nine.vercel.app/upload/${req.file.filename}`
+        image_url: `https://shopper-backend-nine.vercel.app/uploads/${req.file.filename}`
     })
 })
 
